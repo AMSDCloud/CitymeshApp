@@ -1,0 +1,1008 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Guía CityMesh App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: cabecera corta, pestañas en dos grupos, y en cada guía los pasos junto a un teléfono simulado fijo en pantalla. */
+:root{
+  --font-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --font-body:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+
+  --bg:#eceff3;
+  --surface:#ffffff;
+  --ink:#14212e;
+  --muted:#53657a;
+  --line:#cbd4de;
+  --accent:#0d4a8f;
+  --sel-bg:#0b2a4a;
+  --sel-fg:#ffffff;
+  --ok:#1c7c3f;
+  --on-ok:#ffffff;
+  --crit:#c4161c;
+  --on-crit:#ffffff;
+  --med:#1f5fae;
+  --on-med:#ffffff;
+  --note-bg:#fff1d6;
+
+  /* Colores del teléfono: iguales en ambos temas */
+  --p-yellow:#e8b410;
+  --p-yellow-d:#d3a30c;
+  --p-dark:#1e262e;
+  --p-ink:#20262c;
+  --p-grey:#f1f1f1;
+  --p-red:#d9272d;
+  --p-blue:#2f5d9e;
+  --p-green:#3cb35a;
+  --p-hl:#0a84ff;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d151e; --surface:#16212d; --ink:#e8eef5; --muted:#9db0c4; --line:#2b3b4d;
+    --accent:#6fb0f5; --sel-bg:#6fb0f5; --sel-fg:#0b1a2b; --ok:#5ccb85; --on-ok:#08210f;
+    --crit:#ff6b6b; --on-crit:#2a0606; --med:#7db4f5; --on-med:#08213f; --note-bg:#2d2412; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d151e; --surface:#16212d; --ink:#e8eef5; --muted:#9db0c4; --line:#2b3b4d;
+  --accent:#6fb0f5; --sel-bg:#6fb0f5; --sel-fg:#0b1a2b; --ok:#5ccb85; --on-ok:#08210f;
+  --crit:#ff6b6b; --on-crit:#2a0606; --med:#7db4f5; --on-med:#08213f; --note-bg:#2d2412; color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 var(--font-body);padding-inline:16px;padding-block:24px 48px}
+.wrap{max-width:1080px;margin:0 auto}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+button{font-family:inherit}
+h2{margin:0 0 14px;font:700 1.75rem/1.05 var(--font-display);text-transform:uppercase;letter-spacing:.015em}
+h3{margin:0}
+
+header{padding-bottom:20px}
+h1{margin:0;font:700 clamp(2.25rem,7vw,3.5rem)/.95 var(--font-display);text-transform:uppercase;letter-spacing:.01em;text-wrap:balance}
+.lede{margin:10px 0 0;color:var(--muted);max-width:62ch}
+
+.tabs{display:grid;gap:16px}
+.tg{display:grid;gap:6px;min-width:0}
+.tgl{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+.tgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.tab{display:flex;flex-direction:column;gap:2px;min-height:60px;padding:10px 14px;text-align:left;background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:8px;cursor:pointer}
+.tab .t1{font-weight:600;font-size:1rem;line-height:1.2}
+.tab .t2{font-size:.8125rem;color:var(--muted);line-height:1.25}
+.tab[aria-selected="true"]{background:var(--sel-bg);color:var(--sel-fg);border-color:var(--sel-bg)}
+.tab[aria-selected="true"] .t2{color:inherit;opacity:.85}
+@media (max-width:980px){.tgrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:560px){.tgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+[role="tabpanel"]{margin-top:28px}
+
+.proc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,460px);gap:16px 40px;align-items:start}
+.stage{position:sticky;top:16px;min-width:0}
+.info{min-width:0}
+@media (max-width:860px){
+  .proc{grid-template-columns:minmax(0,1fr)}
+  .info{display:contents}
+  .info>h2{order:-3;margin:0}
+  .info>.facts{order:-2;margin:0}
+  .stage{position:static;order:-1}
+  .info>.steps{order:0}
+}
+
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px;padding:0;list-style:none}
+.fact{font:500 .8125rem/1.3 var(--font-mono);padding:5px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface)}
+
+.steps{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.step{border-bottom:1px solid var(--line)}
+.sh{display:grid;grid-template-columns:2rem minmax(0,1fr);gap:12px;align-items:center;width:100%;padding:13px 0;background:none;border:0;color:inherit;text-align:left;cursor:pointer}
+.sh h3{font:600 1.0625rem/1.3 var(--font-body)}
+.num{display:grid;place-items:center;width:2rem;height:2rem;border-radius:50%;border:1.5px solid var(--line);font:500 .8rem var(--font-mono);color:var(--muted)}
+.step.done .num{background:var(--ok);border-color:var(--ok);color:var(--on-ok);font-size:0}
+.step.done .num::before{content:"✓";font-size:.9rem}
+.step.active .num{background:var(--sel-bg);border-color:var(--sel-bg);color:var(--sel-fg)}
+.step:not(.active) h3{font-weight:500;color:var(--muted)}
+.step.done h3{color:var(--ink)}
+.sb{padding:0 0 18px calc(2rem + 12px)}
+.sb p{margin:0 0 10px;max-width:60ch}
+.note{padding:10px 12px;border-radius:6px;background:var(--note-bg);font-size:.9375rem}
+.note b{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+
+.nav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 14px}
+.count{font:500 .8125rem var(--font-mono);color:var(--muted);text-align:center}
+.cap{margin:10px 0 0;font-size:.8125rem;color:var(--muted);text-align:center}
+.now{display:none}
+@media (max-width:860px){
+  .now{display:block;margin-top:14px}
+  .now h3{font:600 1.0625rem/1.3 var(--font-body);margin-bottom:4px}
+  .now p{margin:0 0 10px}
+  .sb{display:none}
+}
+.btn-s{min-height:44px;padding:10px 18px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 .9375rem var(--font-body);cursor:pointer}
+.btn-s.primary{background:var(--sel-bg);color:var(--sel-fg);border-color:var(--sel-bg)}
+.btn-s:disabled{opacity:.4;cursor:default}
+
+/* Referencias */
+.intro{margin:0 0 18px;max-width:62ch;color:var(--muted)}
+.pins{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:0 40px;margin:0 0 28px;padding:0;list-style:none}
+.pin-c{padding:16px 0 18px;border-top:1px solid var(--line);min-width:0}
+.pin-c .k{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+.pin-c .v{margin:4px 0 6px;font:700 2rem/1.05 var(--font-display)}
+.pin-c p{margin:0 0 6px;max-width:52ch}
+.sub{margin-top:36px}
+.arows{list-style:none;margin:0;padding:0}
+.arow{display:grid;grid-template-columns:minmax(0,230px) minmax(0,1fr) minmax(0,1fr);gap:6px 28px;padding:14px 0;border-top:1px solid var(--line)}
+.arow.two{grid-template-columns:minmax(0,300px) minmax(0,1fr)}
+.arow h3{font:700 1.375rem/1.1 var(--font-display);text-transform:uppercase;letter-spacing:.01em}
+.arow .lb{display:block;font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:2px}
+.arow p{margin:0;max-width:56ch}
+@media (max-width:760px){.arow,.arow.two{grid-template-columns:minmax(0,1fr)}}
+.sev{display:inline-block;margin-bottom:4px;padding:2px 9px;border-radius:999px;font:600 .75rem var(--font-mono)}
+.sev.info{border:1px solid var(--line);color:var(--muted)}
+.sev.crit{background:var(--crit);color:var(--on-crit)}
+.sev.med{background:var(--med);color:var(--on-med)}
+
+/* Simulador */
+.hint{margin:0 0 14px;max-width:58ch}
+.pinbox{display:flex;flex-wrap:wrap;gap:8px 20px;margin:0 0 18px;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface);font:500 .875rem var(--font-mono)}
+.grp{margin:0 0 18px}
+.grp h3{font-size:.75rem;font-weight:600;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:8px}
+.ctl{display:flex;flex-wrap:wrap;gap:8px}
+.chk{display:flex;align-items:center;gap:10px;min-height:44px;cursor:pointer}
+.chk input{width:20px;height:20px;accent-color:var(--sel-bg)}
+.logh{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.logh h3{margin:0}
+.log{list-style:none;margin:0;padding:0;border-top:1px solid var(--line);min-height:3.5rem}
+.log li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:4px 12px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line)}
+.log time{font:500 .8125rem var(--font-mono);color:var(--muted)}
+.log .empty{display:block;color:var(--muted)}
+.status{min-height:1.5em;margin:0 0 12px;color:var(--muted);font-size:.9375rem}
+
+/* ===== Teléfono ilustrado ===== */
+.ph{container-type:inline-size;width:min(100%,260px);margin-inline:auto}
+@media (max-width:860px){.ph{width:min(100%,250px)}}
+.pd{background:#0f1418;border-radius:9cqw;padding:2.6cqw;box-shadow:0 18px 30px -18px rgba(0,0,0,.6)}
+.ps{position:relative;aspect-ratio:331/716;border-radius:7cqw;overflow:hidden;background:var(--p-grey);color:var(--p-ink);font:400 3.7cqw/1.25 var(--font-body);isolation:isolate}
+.pn{position:absolute;left:50%;top:1.6cqw;translate:-50% 0;width:18cqw;height:3cqw;border-radius:3cqw;background:#0f1418;z-index:7}
+.sc{position:absolute;inset:0;display:flex;flex-direction:column}
+.ic{display:inline-block;width:4.6cqw;height:4.6cqw;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic.s{width:3.8cqw;height:3.8cqw}
+.ic.l{width:6.4cqw;height:6.4cqw}
+.ic.xl{width:12cqw;height:12cqw}
+.spin{animation:spin 1s linear infinite}
+@keyframes spin{to{rotate:360deg}}
+
+.shot{display:block;width:100%;height:100%;object-fit:cover}
+.hl{border-radius:1.6cqw;box-shadow:0 0 0 .5cqw #fff,0 0 0 1.1cqw var(--p-hl);animation:ring 1.6s ease-in-out infinite;position:relative;z-index:3}
+@keyframes ring{50%{box-shadow:0 0 0 .5cqw #fff,0 0 0 1.8cqw rgba(10,132,255,.5)}}
+@media (prefers-reduced-motion:reduce){.hl{animation:none}.spin{animation:none}}
+
+.mesh{position:absolute;inset:0;width:100%;height:100%;color:var(--p-yellow);opacity:.4;pointer-events:none;z-index:0}
+.sc.dk{background:var(--p-dark);color:#fff;padding:12cqw 7cqw 7cqw}
+.sc.dk>*:not(.mesh){position:relative;z-index:1}
+.dkc{flex:1;display:flex;flex-direction:column;justify-content:center;gap:3.4cqw;text-align:center}
+.dkc p{margin:0;font-size:3.2cqw;color:#d7dbe0}
+.dkt{font-size:4.6cqw;font-weight:600}
+.amb{color:var(--p-yellow);font-weight:600;font-size:4.4cqw}
+.fld{display:flex;justify-content:space-between;align-items:center;gap:2cqw;background:#fff;color:#7a828a;border-radius:.9cqw;padding:2.6cqw 3cqw;font-size:3.3cqw;text-align:left}
+.pb{display:grid;place-items:center;height:9.6cqw;border-radius:1cqw;background:var(--p-yellow);color:var(--p-ink);font-weight:600;font-size:3.5cqw}
+.lnk{font-size:3.1cqw;color:#fff}
+
+.sc.lt{background:var(--p-grey)}
+.ab{display:flex;align-items:center;gap:3cqw;padding:7.5cqw 4cqw 3.4cqw;background:var(--p-yellow);color:var(--p-ink);font-weight:600;font-size:3.9cqw}
+.ab .sp{flex:1}
+.bkb{background:none;border:0;padding:0;color:inherit;display:grid;place-items:center;cursor:pointer}
+.pc{padding:12cqw 9cqw;display:grid;justify-items:center;gap:3.4cqw;text-align:center;color:#59616a;font-size:3.4cqw}
+.pc .ic{color:#9aa0a6}
+.pc p{margin:0}
+.fab{position:absolute;right:5cqw;bottom:6cqw;width:11cqw;height:11cqw;border-radius:50%;background:var(--p-yellow);display:grid;place-items:center;color:var(--p-ink);box-shadow:0 1cqw 2cqw rgba(0,0,0,.25)}
+.pin{display:grid;justify-items:center;gap:2.4cqw;padding:9cqw 6cqw 0;text-align:center}
+.pdg{display:flex;gap:2cqw}
+.dg{display:inline-block;width:6cqw;padding-bottom:.6cqw;border-bottom:.4cqw solid #444;text-align:center;font-size:4.6cqw}
+.pdt{display:flex;gap:3.4cqw;padding-top:2cqw}
+.pdt i{width:2.4cqw;height:2.4cqw;border-radius:50%;background:#bdbdbd}
+.pdt i.f{background:#444}
+.pin .sub{font-size:3cqw;color:#666}
+.pin .sub.err{color:#c4161c;font-weight:600}
+.pin .nt{font-size:3cqw;color:#666}
+.pad{margin-top:auto;display:grid;grid-template-columns:repeat(3,13cqw);gap:3.2cqw 5cqw;justify-content:center;padding-bottom:9cqw}
+.pk{width:13cqw;height:13cqw;border-radius:50%;background:#dcdcdc;color:#666;display:grid;place-items:center;font:400 5cqw var(--font-body);border:0;padding:0}
+.pk.z{background:transparent}
+button.pk{cursor:pointer}
+
+.dash{background:var(--p-grey)}
+.yw{background:var(--p-yellow);border-radius:0 0 7cqw 7cqw;padding-bottom:5cqw;position:relative}
+.dtop{display:flex;align-items:center;justify-content:space-between;padding:7.5cqw 4cqw 0;color:var(--p-ink)}
+.mni{display:grid;place-items:center;padding:.6cqw}
+.dtt{text-align:center;line-height:1.15;font-weight:600;font-size:3.6cqw}
+.dtt small{display:block;font-weight:500;font-size:3cqw}
+.rg{display:flex;align-items:center;gap:2cqw;min-width:6.4cqw;justify-content:flex-end}
+.wb{width:5cqw;height:5cqw;border-radius:50%;background:#fff;color:var(--p-yellow-d);display:grid;place-items:center;font:700 3.4cqw var(--font-body);font-style:normal}
+.sig{width:2.4cqw;height:4.4cqw;border-radius:.4cqw;background:linear-gradient(#2d2d2d,#2d2d2d);box-shadow:-1.2cqw 1cqw 0 -.4cqw #2d2d2d,1.2cqw -1cqw 0 -.6cqw #3cb35a;display:block}
+.dst{text-align:center;font-weight:600;font-size:4cqw;margin-top:5cqw}
+.shields{position:relative;height:25cqw;margin:2cqw 0 3cqw}
+.slot{position:absolute;top:50%;translate:-50% -50%;width:12cqw;color:rgba(70,50,0,.5)}
+.sd{width:100%;height:auto;display:block}
+.slot .sd path{fill:none;stroke:rgba(70,50,0,.5);stroke-width:1.6}
+.ico{position:absolute;inset:0;display:grid;place-items:center;padding-bottom:1.6cqw}
+.tok{position:absolute;top:50%;translate:-50% -50%;width:17.5cqw;left:var(--x,50%);transition:left .28s ease;touch-action:none;cursor:grab;color:var(--p-yellow-d);z-index:2}
+.tok .sd path{fill:#fff;stroke:none}
+.tok.drag{transition:none;cursor:grabbing}
+.tok.hl{border-radius:50%}
+.slot.hl{border-radius:3cqw}
+.dash.dim .shields,.dash.dim .bars{opacity:.45}
+.bars{display:grid;gap:2.6cqw;padding:0 7cqw}
+.sl{position:relative;height:9.6cqw;border-radius:99cqw;background:var(--p-yellow-d);overflow:hidden;touch-action:none;user-select:none;color:var(--p-ink);--p:0}
+.sl.hl{overflow:visible;border-radius:99cqw}
+.sl .fill{position:absolute;left:0;top:0;bottom:0;width:calc(9.6cqw + var(--p) * (100% - 9.6cqw));border-radius:99cqw}
+.sl.panic .fill{background:#b3282d}
+.sl.med .fill{background:var(--p-blue)}
+.sl.acc .fill{background:rgba(255,255,255,.45)}
+.sl .lab{position:absolute;inset:0;display:grid;place-items:center;padding-inline:11cqw;font-size:3.2cqw;color:rgba(40,30,0,.85);pointer-events:none;font-variant-numeric:tabular-nums}
+.sl.panic.drag .lab,.sl.med.drag .lab{color:#fff}
+.sl .kn{position:absolute;top:.9cqw;left:calc(.9cqw + var(--p) * (100% - 9.6cqw));width:7.8cqw;height:7.8cqw;border-radius:50%;background:#fff;display:grid;place-items:center;color:var(--p-yellow-d);transition:left .25s}
+.sl.panic .kn{color:#d9892b}
+.sl.med .kn{color:var(--p-blue)}
+.sl.drag .kn,.sl.drag .fill{transition:none}
+.sl .ck{display:none;position:absolute;inset:0;place-items:center;color:#7a7a7a}
+.sl.done{background:#fff}
+.sl.done .ck{display:grid}
+.sl.done .lab,.sl.done .kn,.sl.done .fill{display:none}
+.sl.run{background:#fff}
+.sl.run .fill{background:rgba(232,180,16,.35)}
+.low{flex:1;min-height:0;display:flex;flex-direction:column;gap:2cqw;padding:3.4cqw 4cqw 0;overflow:hidden}
+.crd{display:flex;align-items:center;gap:2.6cqw;background:#fff;border-radius:1.2cqw;padding:2.2cqw 3cqw;font-size:3.2cqw}
+.crd .ic{color:#8a9097}
+.crd div{flex:1;line-height:1.2}
+.crd small{display:flex;align-items:center;gap:1.2cqw;color:#7a828a;font-size:2.6cqw}
+.gd{width:1.6cqw;height:1.6cqw;border-radius:50%;background:var(--p-green);display:inline-block}
+.pw{width:7cqw;height:7cqw;border-radius:50%;background:var(--p-yellow);display:grid;place-items:center;color:var(--p-ink)}
+.evh{font-weight:600;font-size:3.5cqw;padding:1cqw 1cqw 0}
+.evl{display:grid}
+.evi{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2cqw;padding:2cqw 1cqw;border-bottom:.2cqw solid #dcdcdc}
+.evi b{display:block;font-size:3.1cqw}
+.evi small{color:#7a828a;font-size:2.6cqw}
+.evi span{color:#7a828a;font-size:2.6cqw;font-variant-numeric:tabular-nums}
+.dash.evo .bars,.dash.evo .crd,.dash.evo .dst{display:none}
+.dash.evo .shields{margin-bottom:1cqw}
+
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.5);z-index:4}
+.drw{position:absolute;left:0;top:0;bottom:0;width:76%;background:#fff;z-index:5;display:flex;flex-direction:column;color:#333}
+.dh{position:relative;overflow:hidden;background:var(--p-dark);color:#fff;padding:10cqw 5cqw 5cqw;margin-bottom:2cqw}
+.dh>*:not(.mesh){position:relative;z-index:1}
+.dh b{display:block;font-size:3.6cqw}
+.dh small{font-size:3cqw;color:#cfd4d9}
+.di{display:flex;align-items:center;gap:3cqw;padding:2.6cqw 5cqw;font-size:3.2cqw}
+.di.mute{color:#a5abb1}
+.dbt{margin-top:auto;padding-bottom:5cqw}
+.ov{position:absolute;inset:0;background:rgba(0,0,0,.55);display:grid;place-items:center;z-index:6}
+.dlg{width:78%;background:#fff;border-radius:1.4cqw;overflow:hidden;text-align:left;color:#333}
+.dhd{display:grid;place-items:center;background:var(--p-red);color:#fff;padding:6cqw 0}
+.dbd{padding:3.4cqw 4cqw 1cqw}
+.dbd b,.dlg.sm b{display:block;font-size:3.8cqw;margin-bottom:1.4cqw}
+.dbd p,.dlg.sm p{margin:0;font-size:3cqw;color:#777}
+.dlg.sm{padding:4cqw 4cqw 2.4cqw}
+.dba{display:flex;justify-content:flex-end;gap:5cqw;padding:3cqw 4cqw 3.4cqw;font-size:2.9cqw;font-weight:600;color:#777}
+.dba .red{color:var(--p-red)}
+.dba .am{color:#c99a08}
+.dba button{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer}
+.snk{position:absolute;left:3cqw;right:3cqw;top:16cqw;z-index:6;display:flex;justify-content:space-between;align-items:center;background:#ef7f7f;color:#fff;padding:3cqw;font-size:3cqw;border-radius:.6cqw}
+.snk b{font-size:2.8cqw}
+
+.ar{display:flex;align-items:center;gap:3cqw;background:#fff;border-radius:1.2cqw;padding:2.2cqw 3cqw;margin:0 3cqw 2cqw}
+.ar .ic{color:#9aa0a6}
+.ar div{flex:1;line-height:1.2;font-size:3.1cqw}
+.ar small{display:flex;align-items:center;gap:1.2cqw;color:#7a828a;font-size:2.5cqw}
+.tgl2{display:flex;flex-direction:column;align-items:flex-end;gap:.6cqw;font-size:2.3cqw;color:#8a9097}
+.tg2{width:8cqw;height:4cqw;border-radius:2cqw;background:#f0cb55;position:relative}
+.tg2::after{content:"";position:absolute;top:.4cqw;right:.4cqw;width:3.2cqw;height:3.2cqw;border-radius:50%;background:var(--p-yellow)}
+.tg2.offx{background:#cfcfcf}
+.tg2.offx::after{right:auto;left:.4cqw;background:#fff}
+.lst{padding-top:3cqw;overflow:hidden}
+.mo{display:flex;align-items:center;justify-content:space-between;padding:3cqw 4cqw;background:#fff;font-size:3.3cqw;font-weight:600}
+.hd{padding:2cqw 4cqw;font-size:3cqw;font-weight:600;background:#f1f1f1}
+.hi{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2cqw;padding:2cqw 4cqw;background:#fff;border-bottom:.2cqw solid #e2e2e2}
+.hi b{display:block;font-size:3.1cqw}
+.hi small{color:#7a828a;font-size:2.5cqw}
+.hi span{color:#7a828a;font-size:2.7cqw;font-variant-numeric:tabular-nums}
+.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:1.4cqw 0;text-align:center;font-size:2.7cqw;padding:0 3cqw}
+.cal i{font-style:normal;color:#999}
+.cal b{font-weight:400;padding:.6cqw 0;border-radius:50%}
+.cal b.td{background:var(--p-yellow);color:var(--p-ink)}
+.cm{text-align:center;font-size:3cqw;padding:3cqw 0 2cqw;font-weight:600}
+.row2{display:flex;justify-content:space-between;align-items:center;padding:3.6cqw 4.5cqw;background:#fff;border-bottom:.2cqw solid #e2e2e2;font-size:3.3cqw}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 24 24"><path d="M12 4l9 16H3z"/><path d="M12 10v4M12 17.2v.1"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-power" viewBox="0 0 24 24"><path d="M12 3.5v8"/><path d="M7.2 6.8a7 7 0 1 0 9.6 0"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></symbol>
+    <symbol id="i-house" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/><path d="M10 20v-5h4v5"/></symbol>
+    <symbol id="i-lockopen" viewBox="0 0 24 24"><path d="M6 11h12v9H6z"/><path d="M9 11V8a3 3 0 0 1 5.6-1.5"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><path d="M6 11h12v9H6z"/><path d="M9 11V8a3 3 0 0 1 6 0v3"/></symbol>
+    <symbol id="i-houseperson" viewBox="0 0 24 24"><path d="M4 11l8-7 8 7"/><path d="M6 10v10h12V10"/><circle cx="12" cy="13.6" r="1.6"/><path d="M9.6 19.4c.3-2 1.2-3 2.4-3s2.1 1 2.4 3"/></symbol>
+    <symbol id="i-spin" viewBox="0 0 24 24"><path d="M12 4a8 8 0 1 0 8 8"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 2.5v5.5c0 4.2-3 7.6-7 9-4-1.4-7-4.8-7-9V5.5z"/></symbol>
+    <symbol id="i-shieldlock" viewBox="0 0 24 24"><path d="M12 3l7 2.5v5.5c0 4.2-3 7.6-7 9-4-1.4-7-4.8-7-9V5.5z"/><path d="M9.5 11h5v4h-5z"/><path d="M10.5 11V9.8a1.5 1.5 0 0 1 3 0V11"/></symbol>
+    <symbol id="i-shieldwarn" viewBox="0 0 24 24"><path d="M12 3l7 2.5v5.5c0 4.2-3 7.6-7 9-4-1.4-7-4.8-7-9V5.5z"/><path d="M12 8.5v4M12 15v.1"/></symbol>
+    <symbol id="i-bars" viewBox="0 0 24 24"><path d="M7 5v14M12 8v11M17 5v14"/></symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></symbol>
+    <symbol id="i-cam" viewBox="0 0 24 24"><path d="M4 7h11v10H4z"/><path d="M15 11l5-3v8l-5-3z"/></symbol>
+    <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3.6"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M10 5H5v14h5"/><path d="M14 8l4 4-4 4M18 12H9"/></symbol>
+    <symbol id="i-plug" viewBox="0 0 24 24"><path d="M9 3v5M15 3v5"/><path d="M7 8h10v3a5 5 0 0 1-10 0z"/><path d="M12 16v5"/></symbol>
+    <symbol id="i-wifioff" viewBox="0 0 24 24"><path d="M3 9a14 14 0 0 1 18 0M6 12.5a9.5 9.5 0 0 1 12 0M9 16a5 5 0 0 1 6 0M12 19.2v.1M4 4l16 16"/></symbol>
+    <symbol id="i-devoff" viewBox="0 0 24 24"><path d="M8 4h8v16H8z"/><path d="M11 17h2M4 4l16 16"/></symbol>
+    <symbol id="i-kebab" viewBox="0 0 24 24"><path d="M12 6v.1M12 12v.1M12 18v.1" stroke-width="2.6"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="2.6"/></symbol>
+    <symbol id="i-backspace" viewBox="0 0 24 24"><path d="M9 6h10v12H9l-5-6z"/><path d="M12.5 9.5l4 5M16.5 9.5l-4 5"/></symbol>
+  </defs>
+</svg>
+
+<div class="wrap">
+  <header>
+    <h1>Guía CityMesh App</h1>
+    <p class="lede">Cómo usa el usuario final la CityMesh App para armar, desarmar y pedir ayuda, y qué recibe la central de monitoreo en cada caso. Incluye un simulador para practicar.</p>
+  </header>
+
+  <nav class="tabs" aria-label="Guía">
+    <div class="tg"><span class="tgl">Cómo hacer…</span>
+      <div class="tgrid" role="tablist" aria-label="Guías">
+        <button class="tab" role="tab" id="t-inicio" data-t="inicio" aria-controls="tab-inicio" aria-selected="true"><span class="t1">Primer inicio</span><span class="t2">Contraseña y PINs</span></button>
+        <button class="tab" role="tab" id="t-armado" data-t="armado" aria-controls="tab-armado" aria-selected="false" tabindex="-1"><span class="t1">Armar y desarmar</span><span class="t2">Deslizar el candado</span></button>
+        <button class="tab" role="tab" id="t-emergencias" data-t="emergencias" aria-controls="tab-emergencias" aria-selected="false" tabindex="-1"><span class="t1">Emergencias</span><span class="t2">Acceso seguro, pánico, médica</span></button>
+        <button class="tab" role="tab" id="t-menu" data-t="menu" aria-controls="tab-menu" aria-selected="false" tabindex="-1"><span class="t1">Menú y funciones</span><span class="t2">Eventos, periféricos, cuenta</span></button>
+        <button class="tab" role="tab" id="t-avisos" data-t="avisos" aria-controls="tab-avisos" aria-selected="false" tabindex="-1"><span class="t1">Advertencias</span><span class="t2">Sin internet o sin equipo</span></button>
+      </div>
+    </div>
+    <div class="tg"><span class="tgl">Referencia</span>
+      <div class="tgrid" role="tablist" aria-label="Referencia">
+        <button class="tab" role="tab" id="t-gestos" data-t="gestos" aria-controls="tab-gestos" aria-selected="false" tabindex="-1"><span class="t1">Gestos y PINs</span><span class="t2">Resumen de acciones</span></button>
+        <button class="tab" role="tab" id="t-central" data-t="central" aria-controls="tab-central" aria-selected="false" tabindex="-1"><span class="t1">Qué recibe la central</span><span class="t2">Para el operador</span></button>
+        <button class="tab" role="tab" id="t-practicar" data-t="practicar" aria-controls="tab-practicar" aria-selected="false" tabindex="-1"><span class="t1">Practicar</span><span class="t2">Simulador de la app</span></button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <section role="tabpanel" id="tab-inicio" aria-labelledby="t-inicio"></section>
+    <section role="tabpanel" id="tab-armado" aria-labelledby="t-armado" hidden></section>
+    <section role="tabpanel" id="tab-emergencias" aria-labelledby="t-emergencias" hidden></section>
+    <section role="tabpanel" id="tab-menu" aria-labelledby="t-menu" hidden></section>
+    <section role="tabpanel" id="tab-avisos" aria-labelledby="t-avisos" hidden></section>
+    <section role="tabpanel" id="tab-gestos" aria-labelledby="t-gestos" hidden></section>
+    <section role="tabpanel" id="tab-central" aria-labelledby="t-central" hidden></section>
+    <section role="tabpanel" id="tab-practicar" aria-labelledby="t-practicar" hidden></section>
+  </main>
+
+  <footer style="margin-top:40px;padding-top:16px;border-top:1px solid var(--line);font-size:.8125rem;color:var(--muted);max-width:70ch">Basada en el manual de usuario final de la CityMesh App. Las capturas de las guías son del manual original. El simulador de la pestaña Practicar es una reproducción esquemática con datos de ejemplo.</footer>
+</div>
+
+<script>
+(function(){
+  var $ = function(s, r){ return (r || document).querySelector(s); };
+  var $$ = function(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var ic = function(n, c){ return '<svg class="ic ' + (c || '') + '" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-' + n + '"/></svg>'; };
+  var on = function(h, k){ return h === k ? ' hl' : ''; };
+  var pad2 = function(n){ return String(n).padStart(2, '0'); };
+  var MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  var DAYS = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+  var NOW = new Date();
+
+  /* ---------- Piezas del teléfono ---------- */
+  var SHIELD = '<svg class="sd" viewBox="0 0 40 46" aria-hidden="true"><path d="M20 2L37 8v16c0 10-7 17-17 20C10 41 3 34 3 24V8z"/></svg>';
+
+  function mesh(){
+    var pts = [[8,10],[30,22],[55,12],[82,26],[18,46],[46,40],[72,52],[92,44],[10,78],[36,70],[62,84],[88,96],[24,112],[52,120],[80,132],[12,150],[40,160],[70,168],[94,158]];
+    var s = '<svg class="mesh" viewBox="0 0 100 178" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><g stroke="currentColor" stroke-width=".35" fill="none">';
+    for (var i = 0; i < pts.length; i++){
+      for (var j = i + 1; j < pts.length && j <= i + 3; j++){
+        s += '<path d="M' + pts[i][0] + ' ' + pts[i][1] + 'L' + pts[j][0] + ' ' + pts[j][1] + '"/>';
+      }
+    }
+    s += '</g><g fill="currentColor">';
+    pts.forEach(function(p, i){ s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="' + (i % 4 === 0 ? 1.6 : .9) + '"/>'; });
+    return s + '</g></svg>';
+  }
+
+  var SAMPLE_EV = [
+    {n: 'Desarmado', s: 'Usuario Técnico', t: '10:53:49'},
+    {n: 'Armado Total', s: 'Usuario Técnico', t: '10:35:16'},
+    {n: 'Disparo', s: 'Zona 10 Entrada', t: '10:31:21'}
+  ];
+
+  function slRow(k, label, icon, st, hl, secs){
+    var p = st === 'half' ? 0.5 : (st === 'run' || st === 'done' ? 1 : 0);
+    var cls = 'sl ' + k + (st === 'done' ? ' done' : '') + (st === 'run' ? ' run' : '') + (st === 'half' ? ' drag' : '') + on(hl, k);
+    var text = st === 'run' ? ('00:' + pad2(secs)) : label;
+    return '<div class="' + cls + '" data-k="' + k + '" style="--p:' + p + '"><i class="fill"></i><span class="lab">' + text + '</span><span class="ck">' + ic('check', 'l') + '</span><span class="kn">' + ic(icon, 's') + '</span></div>';
+  }
+
+  function dash(o){
+    o = o || {};
+    var mode = o.mode || 'off', hl = o.hl || '', bar = o.bar || {};
+    var pos = {off: '50%', total: '17%', perim: '83%'}[mode];
+    var here = {off: 'mid', total: 'left', perim: 'right'}[mode];
+    var icon = o.busy ? 'spin' : (mode === 'off' ? 'lockopen' : (mode === 'total' ? 'house' : 'houseperson'));
+    var label = {off: 'Desarmado', total: 'Armado total', perim: 'Armado perimetral'}[mode];
+    if (o.busy) label = 'Enviando comando…';
+    var ev = o.events || SAMPLE_EV;
+    var evOpen = o.ev === 'open';
+    var slots = [['left', 'house', '17%'], ['mid', 'lockopen', '50%'], ['right', 'houseperson', '83%']].filter(function(s){ return s[0] !== here; });
+    var slotHtml = slots.map(function(s){
+      return '<span class="slot' + on(hl, s[0]) + '" style="left:' + s[2] + '">' + SHIELD + '<span class="ico">' + ic(s[1], 'l') + '</span></span>';
+    }).join('');
+    var evHtml = ev.slice(0, evOpen ? 6 : 2).map(function(e){
+      return '<div class="evi"><div><b>' + e.n + '</b><small>' + e.s + '</small></div><span>' + e.t + '</span></div>';
+    }).join('');
+    return '<div class="sc dash' + (o.dim ? ' dim' : '') + (evOpen ? ' evo' : '') + '">' +
+      '<div class="yw">' +
+        '<div class="dtop"><span class="mni' + on(hl, 'menu') + '">' + ic('menu', 'l') + '</span>' +
+          '<div class="dtt">' + (o.name || 'Casa de ejemplo') + '<small>A182</small></div>' +
+          '<span class="rg">' + (o.warn ? '<i class="wb' + on(hl, 'warn') + '">!</i>' : '') + '<i class="sig"></i></span></div>' +
+        '<div class="dst">' + label + '</div>' +
+        '<div class="shields">' + slotHtml +
+          '<div class="tok' + on(hl, 'tok') + '" style="--x:' + pos + '" data-mode="' + mode + '">' + SHIELD + '<span class="ico">' + ic(icon, 'l' + (o.busy ? ' spin' : '')) + '</span></div></div>' +
+        '<div class="bars">' +
+          slRow('acc', 'Acceso Seguro', 'clock', bar.acc || 'idle', hl, o.secs || 60) +
+          slRow('panic', 'Botón de Pánico', 'warn', bar.panic || 'idle', hl, 0) +
+          slRow('med', 'Emergencia Médica', 'plus', bar.med || 'idle', hl, 0) +
+        '</div>' +
+      '</div>' +
+      '<div class="low"><div class="crd">' + ic('plug', 'l') + '<div><b>8 - Luz living</b><small><i class="gd"></i>Listo</small></div><span class="pw">' + ic('power', 's') + '</span></div>' +
+        '<div class="evh">Últimos eventos</div><div class="evl">' + evHtml + '</div></div>' +
+    '</div>';
+  }
+
+  function drawer(hl){
+    hl = hl || '';
+    var items = [['panel', 'shield', 'Panel'], ['alarm', 'bars', 'Sistema de Alarma'], ['hist', 'clock', 'Historial de Eventos'], ['domo', 'bulb', 'Domótica'], ['cam', 'cam', 'Cámaras']];
+    var its = items.map(function(i){
+      return '<div class="di' + (i[0] === 'cam' ? ' mute' : '') + on(hl, i[0]) + '">' + ic(i[1], 's') + '<span>' + i[2] + '</span></div>';
+    }).join('');
+    return dash({dim: true}) + '<div class="scrim"></div><div class="drw"><div class="dh">' + mesh() + '<b>Usuario de ejemplo</b><small>Casa de ejemplo A182</small></div>' + its +
+      '<div class="dbt"><div class="di' + on(hl, 'cuenta') + '">' + ic('gear', 's') + '<span>Configuración de Cuenta</span></div>' +
+      '<div class="di' + on(hl, 'logout') + '">' + ic('logout', 's') + '<span>Cerrar Sesión</span></div></div></div>';
+  }
+
+  function appBar(title, back){
+    return '<div class="ab"><span class="mni">' + ic(back ? 'back' : 'menu', 'l') + '</span><span>' + title + '</span></div>';
+  }
+
+  function alarmList(o){
+    o = o || {};
+    var items = [['2 - Gas', 'Cerrado', 1], ['3 - Mov', 'Sin movimiento', o.excl ? 0 : 1], ['4 - Humo', 'Cerrado', 1], ['5 - Contrl', 'Listo', 1], ['6 - Botón de pánico', 'Cerrado', 1], ['7 - Agua', 'Cerrado', 1], ['9 - Periférico de prueba', 'Abierto', 1]];
+    var rows = items.map(function(it, i){
+      var isMov = i === 1;
+      return '<div class="ar' + (isMov ? on(o.hl, 'mov') : '') + '">' + ic(i % 2 ? 'bars' : 'shield', 'l') +
+        '<div>' + it[0] + '<small><i class="gd"></i>' + it[1] + '</small></div>' +
+        '<span class="tgl2"><i class="tg2' + (it[2] ? '' : ' offx') + '"></i>' + (it[2] ? 'Incluido' : 'Excluido') + '</span>' + ic('kebab', 's') + '</div>';
+    }).join('');
+    return '<div class="sc lt">' + appBar('Sistema de Alarma', true) + '<div class="lst">' + rows + '</div></div>';
+  }
+
+  function dlgSmall(){
+    return '<div class="ov"><div class="dlg sm"><b>Excluir periférico</b><p>¿Estás seguro de excluir el periférico "Mov"?</p><div class="dba" style="padding-inline:0"><span>CANCELAR</span><span class="am">EXCLUIR</span></div></div></div>';
+  }
+  function dlgBig(icon, title, text, live){
+    return '<div class="ov"><div class="dlg"><div class="dhd">' + ic(icon, 'xl') + '</div><div class="dbd"><b>' + title + '</b><p>' + text + '</p></div>' +
+      '<div class="dba">' + (live ? '<button type="button" class="red ovb">ACEPTAR</button>' : '<span class="red">ACEPTAR</span>') + '</div></div></div>';
+  }
+
+  function history(o){
+    o = o || {};
+    var day = DAYS[NOW.getDay()] + ' ' + NOW.getDate();
+    var evs = [
+      ['Armado Total Parcial', 'Usuario Técnico · Zonas excluidas: 3', '11:27:59'],
+      ['Armado Perimetral', 'Usuario Técnico · Zonas excluidas: 3', '11:24:43'],
+      ['Desarmado', 'Usuario Técnico', '11:23:45'],
+      ['Armado Perimetral', 'Usuario Técnico', '11:23:35'],
+      ['Desarmado', 'Usuario Técnico · Zonas excluidas: 3', '11:20:02'],
+      ['Disparo', 'Zona 10 Entrada', '11:18:01']
+    ];
+    var list = evs.map(function(e){ return '<div class="hi"><div><b>' + e[0] + '</b><small>' + e[1] + '</small></div><span>' + e[2] + '</span></div>'; }).join('');
+    var base = '<div class="sc lt">' + appBar('Historial', true) +
+      '<div class="mo">' + ic('back', 's') + '<span' + (o.hl === 'mes' ? ' class="hl"' : '') + '>' + MONTHS[NOW.getMonth()] + ' ' + NOW.getFullYear() + ' ▾</span>' + ic('chev', 's') + '</div>' +
+      '<div class="hd">' + day + '</div>' + list + '</div>';
+    if (!o.cal) return base;
+    var first = new Date(NOW.getFullYear(), NOW.getMonth(), 1).getDay();
+    var total = new Date(NOW.getFullYear(), NOW.getMonth() + 1, 0).getDate();
+    var cells = ['D', 'L', 'M', 'M', 'J', 'V', 'S'].map(function(d){ return '<i>' + d + '</i>'; }).join('');
+    for (var b = 0; b < first; b++) cells += '<b></b>';
+    for (var d = 1; d <= total; d++) cells += '<b' + (d === NOW.getDate() ? ' class="td"' : '') + '>' + d + '</b>';
+    return base + '<div class="ov"><div class="dlg sm"><div class="cm">' + MONTHS[NOW.getMonth()] + ' ' + NOW.getFullYear() + '</div><div class="cal">' + cells + '</div>' +
+      '<div class="dba" style="padding-inline:0"><span>CANCELAR</span><span class="am">ACEPTAR</span></div></div></div>';
+  }
+
+  function domo(){
+    return '<div class="sc lt">' + appBar('Domótica', true) +
+      '<div class="lst"><div class="ar">' + ic('plug', 'l') + '<div>8 - Luz living<small><i class="gd"></i>Listo</small></div><span class="pw">' + ic('power', 's') + '</span>' + ic('kebab', 's') + '</div></div>' +
+      '<span class="fab">' + ic('plus', 'l') + '</span></div>';
+  }
+  function cuenta(){
+    return '<div class="sc lt">' + appBar('Configuración de cuenta', true) +
+      '<div class="row2"><span>Cambiar Contraseña</span>' + ic('chev', 's') + '</div>' +
+      '<div class="row2"><span>Cambiar Pin de Desactivación</span>' + ic('chev', 's') + '</div>' +
+      '<div class="row2"><span>Cambiar Pin de Coacción</span>' + ic('chev', 's') + '</div></div>';
+  }
+
+  function welcome(h){
+    return '<div class="sc dk">' + mesh() + '<div class="dkc"><span class="dkt">Bienvenido a Citymesh</span><p>El primer comunicador inalámbrico que utiliza tecnología mesh en seguridad electrónica.</p></div><span class="pb' + on(h, 'btn') + '">Iniciar Sesión</span></div>';
+  }
+  function login(){
+    return '<div class="sc dk">' + mesh() + '<div class="dkc"><span class="amb">Iniciar Sesión</span><span class="fld">E-mail</span><span class="fld">Contraseña ' + ic('eye', 's') + '</span><span class="pb">Iniciar Sesión</span><span class="lnk">Olvidé mi contraseña</span></div></div>';
+  }
+  function updatePw(){
+    return '<div class="sc dk">' + mesh() + '<div class="dkc"><span class="amb">Actualizar contraseña</span><p>Debe tener un mínimo de 8 caracteres y contener al menos un número.</p><span class="fld">Nueva contraseña ' + ic('eye', 's') + '</span><span class="fld">Confirmar nueva contraseña ' + ic('eye', 's') + '</span><span class="pb">Actualizar</span></div></div>';
+  }
+  function msg(text, btn){
+    return '<div class="sc dk">' + mesh() + '<div class="dkc"><span class="dkt" style="font-size:3.8cqw">' + text + '</span><span class="pb">' + btn + '</span></div></div>';
+  }
+  function pinIntro(kind){
+    var des = kind === 'des';
+    return '<div class="sc lt">' + appBar(des ? 'Pin de Desactivación' : 'Pin de Coacción', true) +
+      '<div class="pc">' + ic(des ? 'shieldlock' : 'shieldwarn', 'xl') +
+      '<p>' + (des ? 'Crea el PIN de 4 dígitos con el que desactivarás la alarma' : 'Crea el PIN de 4 dígitos con el que desactivarás la alarma en situación de peligro.') + '</p>' +
+      (des ? '' : '<p>Con él se desactivará el sistema de alarma y automáticamente se enviará un evento de pánico a la central de monitoreo.</p>') +
+      '</div><span class="fab">' + ic('chev', 'l') + '</span></div>';
+  }
+  function key(label, live, icon){
+    var inner = icon ? ic('backspace', 's') : label;
+    return live ? '<button type="button" class="pk" data-d="' + (icon ? 'x' : label) + '">' + inner + '</button>' : '<span class="pk">' + inner + '</span>';
+  }
+  function pinKeys(o){
+    var live = !!o.live;
+    var padH = '<div class="pad">';
+    for (var n = 1; n <= 9; n++) padH += key(n, live);
+    padH += '<span class="pk z"></span>' + key(0, live) + key('', live, true) + '</div>';
+    var ind = o.digits
+      ? '<div class="pdg">' + o.digits.split('').map(function(d){ return '<span class="dg">' + d + '</span>'; }).join('') + '</div>'
+      : '<div class="pdt">' + [0, 1, 2, 3].map(function(i){ return '<i class="' + (i < (o.filled || 0) ? 'f' : '') + '"></i>'; }).join('') + '</div>';
+    var back = live ? '<button type="button" class="bkb" aria-label="Volver">' + ic('back', 'l') + '</button>' : '<span class="mni">' + ic('back', 'l') + '</span>';
+    return '<div class="sc lt"><div class="ab">' + back + '<span>' + o.title + '</span><span class="sp"></span>' + (o.check ? ic('check', 's') : '') + '</div>' +
+      '<div class="pin">' + ind + '<small class="sub' + (o.err ? ' err' : '') + '">' + (o.sub || '') + '</small>' + (o.note ? '<small class="nt">' + o.note + '</small>' : '') + '</div>' + padH + '</div>';
+  }
+
+  var S = {
+    welcome: welcome, login: login, update: updatePw, msg: msg, pinIntro: pinIntro, pinKeys: pinKeys,
+    dash: dash, drawer: drawer, alarm: alarmList, history: history, domo: domo, cuenta: cuenta,
+    exclude: function(){ return alarmList({hl: 'mov'}) + dlgSmall(); },
+    net: function(){ return dash({dim: true}) + dlgBig('wifioff', 'No hay conexión a internet', 'Algunas acciones se encuentran bloqueadas hasta recuperar conexión.'); },
+    dev: function(){ return dash({dim: true}) + dlgBig('devoff', 'El panel se encuentra sin conexión', 'Se ha perdido la conexión con el panel.'); },
+    snack: function(){ return dash({dim: true}) + '<div class="snk"><span>No hay conexión a internet</span><b>ACEPTAR</b></div>'; }
+  };
+
+  /* ---------- Guías con pasos ---------- */
+  var IM = function(n, alt){ return '<img class="shot" src="img/s' + n + '.jpg" alt="' + alt + '">'; };
+  var PROCS = {
+    inicio: {
+      title: 'Primer inicio',
+      facts: ['Usuario y contraseña de la empresa de monitoreo', 'Contraseña: 8 caracteres y un número', '2 PINs de 4 dígitos'],
+      steps: [
+        {t: 'Descargar la CityMesh App', d: 'Se descarga desde el App Store (iOS) o desde el Play Store (Android). Después se abre la app y se toca Iniciar Sesión.', scene: function(){ return IM('076', 'Pantalla de bienvenida'); }},
+        {t: 'Iniciar sesión', d: 'Ingresar el e-mail y la contraseña. Si se olvidó la contraseña, se usa la opción Olvidé mi contraseña.',
+          note: ['Importante', 'Para iniciar sesión hay que usar el usuario y la contraseña brindados por la empresa de monitoreo.'], scene: function(){ return IM('073', 'Inicio de sesión'); }},
+        {t: 'Actualizar la contraseña', d: 'En el primer inicio de sesión la app pide cambiar la contraseña por una de elección propia y completamente confidencial. Debe tener un mínimo de 8 caracteres y contener al menos un número.', scene: function(){ return IM('074', 'Actualizar contraseña'); }},
+        {t: 'Confirmar el cambio', d: 'La app avisa que la contraseña se actualizó con éxito. Se toca Continuar.', scene: function(){ return IM('075', 'Contraseña actualizada'); }},
+        {t: 'Crear el PIN de Desactivación', d: 'Es el PIN de 4 dígitos con el que se desactiva la alarma.', scene: function(){ return IM('003', 'Pin de desactivación'); }},
+        {t: 'Elegir los 4 dígitos', d: 'Se ingresan los 4 dígitos en el teclado numérico y se confirma con la tilde de arriba.', scene: function(){ return IM('004', 'Teclado del PIN'); }},
+        {t: 'PIN de Desactivación creado', d: 'La app avisa que el PIN se creó con éxito. Se toca Continuar.', scene: function(){ return IM('005', 'PIN creado'); }},
+        {t: 'Crear el PIN de Coacción', d: 'Con este PIN, al desarmar el sistema de alarma se simula una desactivación común, pero se envía un evento de pánico a la central de monitoreo. Sirve para una situación de peligro.', scene: function(){ return IM('000', 'Pin de coacción'); }},
+        {t: 'Elegir un PIN distinto', d: 'Se ingresan otros 4 dígitos. No puede ser igual al PIN de Desactivación.', scene: function(){ return IM('001', 'Teclado del PIN de coacción'); }},
+        {t: 'PIN de Coacción creado', d: 'La app avisa que el PIN se creó con éxito. Se toca Finalizar.', scene: function(){ return IM('002', 'PIN de coacción creado'); }}
+      ]
+    },
+    armado: {
+      title: 'Armar y desarmar',
+      facts: ['Armado total: candado a la izquierda', 'Armado perimetral: candado a la derecha', 'Desarmar: candado al centro y PIN'],
+      steps: [
+        {t: 'Armado total: cuándo usarlo', d: 'Se usa cuando se deja el domicilio protegido sin que nadie permanezca en el interior de la propiedad. Para armar, se desliza el icono del candado abierto hacia la izquierda.', scene: function(){ return IM('007', 'Deslizar el candado a la izquierda'); }},
+        {t: 'Esperar la confirmación', d: 'Mientras se envía el comando, el icono muestra una animación de espera.', scene: function(){ return IM('008', 'Enviando comando'); }},
+        {t: 'Sistema en armado total', d: 'El escudo blanco queda a la izquierda, con el icono de casa.', scene: function(){ return IM('009', 'Armado total'); }},
+        {t: 'Armado perimetral: cuándo usarlo', d: 'Se usa para proteger el exterior de la vivienda mientras la gente permanece dentro. Solo considera el área consensuada al momento de la instalación (con las zonas interiores). Para armar, se desliza el icono del candado abierto hacia la derecha.', scene: function(){ return IM('011', 'Deslizar el candado a la derecha'); }},
+        {t: 'Esperar la confirmación', d: 'Otra vez el icono muestra la animación de espera mientras se envía el comando.', scene: function(){ return IM('012', 'Enviando comando'); }},
+        {t: 'Sistema en armado perimetral', d: 'El escudo blanco queda a la derecha, con el icono de casa y persona.', scene: function(){ return IM('013', 'Armado perimetral'); }},
+        {t: 'Desarmar', d: 'Ya sea desde armado total o parcial, para desarmar se desliza el icono correspondiente hacia el centro.', scene: function(){ return IM('014', 'Sistema armado'); }},
+        {t: 'Ingresar el PIN', d: 'La app pide el PIN de Desactivación, o el de Coacción si fuese el caso.',
+          note: ['PIN de Coacción', 'Desarma como un desarme común, pero envía un evento de pánico a la central de monitoreo.'], scene: function(){ return IM('015', 'Teclado para desactivar la alarma'); }},
+        {t: 'Sistema desarmado', d: 'El candado abierto vuelve al centro.', scene: function(){ return IM('017', 'Sistema desarmado'); }}
+      ]
+    },
+    emergencias: {
+      title: 'Emergencias',
+      facts: ['Acceso seguro: 60 s (configurable)', 'Pánico: silencioso', 'Médica: sin sirena'],
+      steps: [
+        {t: 'Acceso seguro', d: 'Se activa con un slide completo sobre la barra e inicia un temporizador de 60 segundos. Ese valor es configurable: se conversa con la empresa de monitoreo para adaptarlo.', scene: function(){ return IM('019', 'Deslizar Acceso Seguro'); }},
+        {t: 'Temporizador en marcha', d: 'La barra muestra la cuenta regresiva. Si no ocurre ningún imprevisto, hay que desactivar el acceso seguro con el PIN de Desactivación.',
+          note: ['Si no se desactiva', 'Se envía un evento de pánico a la central de monitoreo.'], scene: function(){ return IM('020', 'Cuenta regresiva'); }},
+        {t: 'Desactivar con el PIN', d: 'La app pide el PIN de Desactivación en la pantalla Finalizar Acceso Seguro.', scene: function(){ return IM('021', 'Finalizar acceso seguro'); }},
+        {t: 'Acceso seguro finalizado', d: 'La barra vuelve a su estado normal.', scene: function(){ return IM('022', 'Dashboard'); }},
+        {t: 'Botón de Pánico', d: 'Se activa con un slide completo sobre la barra. Envía una señal de pánico a la central de monitoreo de manera silenciosa.', scene: function(){ return IM('024', 'Deslizar Botón de Pánico'); }},
+        {t: 'Pánico enviado', d: 'Al completar el slide, la barra muestra una tilde de confirmación.', scene: function(){ return IM('025', 'Pánico enviado'); }},
+        {t: 'Emergencia Médica', d: 'Se activa con un slide completo sobre la barra. Envía una señal de emergencia médica a la central de monitoreo para conectar con una unidad asistencial, sin hacer sonar la sirena.', scene: function(){ return IM('028', 'Deslizar Emergencia Médica'); }},
+        {t: 'Emergencia enviada', d: 'La barra muestra la confirmación.', scene: function(){ return IM('029', 'Emergencia enviada'); }}
+      ]
+    },
+    menu: {
+      title: 'Menú y funciones',
+      facts: ['Menú arriba a la izquierda', 'Cámaras: todavía no habilitada', 'Excluir un periférico arma de forma parcial'],
+      steps: [
+        {t: 'Últimos eventos', d: 'En el dashboard se ven los últimos eventos que el panel envió a la central de monitoreo. Para verlos hay que deslizarse hacia abajo.', scene: function(){ return IM('032', 'Últimos eventos'); }},
+        {t: 'Abrir el menú', d: 'Desde el dashboard se accede al menú, que permite realizar una serie de acciones. La opción Panel regresa al dashboard.', scene: function(){ return IM('061', 'Menú lateral'); }},
+        {t: 'Sistema de Alarma', d: 'Muestra los periféricos del sistema de alarma instalados y su estado actual.', scene: function(){ return IM('039', 'Sistema de alarma'); }},
+        {t: 'Excluir un periférico', d: 'Se puede excluir un periférico del sistema de alarma. La app pide confirmar antes de excluirlo.', scene: function(){ return IM('044', 'Excluir periférico'); }},
+        {t: 'Advertencia en el dashboard', d: 'Con un periférico excluido aparece un signo de exclamación de advertencia en el dashboard. Si se arma, será de manera parcial, sin uno de los periféricos.', scene: function(){ return IM('046', 'Dashboard con advertencia'); }},
+        {t: 'Historial de Eventos', d: 'Permite ver todos los eventos enviados a la central de monitoreo.', scene: function(){ return IM('051', 'Historial'); }},
+        {t: 'Filtrar por fechas', d: 'Se puede cambiar el mes y elegir fechas con el calendario.', scene: function(){ return IM('052', 'Calendario'); }},
+        {t: 'Domótica', d: 'Muestra los periféricos de domótica instalados y su estado actual.', scene: function(){ return IM('056', 'Domótica'); }},
+        {t: 'Cámaras', d: 'Esta función no está habilitada actualmente. Permitirá conectar cámaras de vigilancia WiFi y monitorear personalmente sectores del establecimiento. En el menú aparece atenuada.', scene: function(){ return IM('061', 'Menú lateral'); }},
+        {t: 'Configuración de cuenta', d: 'Desde acá se cambia la contraseña de ingreso a la app, el PIN de Desactivación y el PIN de Coacción.', scene: function(){ return IM('062', 'Configuración de cuenta'); }},
+        {t: 'Cerrar sesión', d: 'Se selecciona Cerrar Sesión al final del menú y la app vuelve a la pantalla de bienvenida.', scene: function(){ return IM('061', 'Menú lateral'); }}
+      ]
+    },
+    avisos: {
+      title: 'Advertencias',
+      facts: ['Sin internet: no se puede armar', 'Equipo sin conexión: no se puede armar'],
+      steps: [
+        {t: 'Sin internet en el celular', d: 'Si el celular no tiene conexión a internet, no puede comunicarse con el CityMesh. Aparece un aviso con el botón ACEPTAR.', scene: function(){ return IM('067', 'Aviso sin internet'); }},
+        {t: 'Ventana de advertencia', d: 'Una ventana roja avisa que algunas acciones están bloqueadas hasta recuperar la conexión. No se permite armar, ni total ni parcialmente.', scene: function(){ return IM('068', 'No hay conexión a internet'); }},
+        {t: 'Equipo sin conexión', d: 'Si el equipo está sin conexión, no puede recibir comandos desde la app. Al intentar armar, el icono queda girando.', scene: function(){ return IM('071', 'Comando sin respuesta'); }},
+        {t: 'Aviso de panel sin conexión', d: 'Una ventana roja indica que el panel se encuentra sin conexión: se ha perdido la conexión con el panel. Tampoco se permite armar, ni total ni parcialmente.', scene: function(){ return IM('072', 'Panel sin conexión'); }}
+      ]
+    }
+  };
+
+  function phoneShell(){
+    return '<div class="ph"><div class="pd"><div class="ps" aria-hidden="true"></div></div></div>';
+  }
+
+  function buildProc(root, cfg){
+    root.innerHTML =
+      '<div class="proc"><div class="info">' +
+        '<h2>' + cfg.title + '</h2>' +
+        '<ul class="facts">' + cfg.facts.map(function(f){ return '<li class="fact">' + f + '</li>'; }).join('') + '</ul>' +
+        '<ol class="steps"></ol></div>' +
+        '<div class="stage">' +
+          '<div class="nav"><button type="button" class="btn-s prev">Anterior</button><span class="count" aria-live="polite"></span><button type="button" class="btn-s primary next">Siguiente</button></div>' +
+          phoneShell() + '<p class="cap">Captura real del manual de la app</p><div class="now" aria-live="polite"></div></div></div>';
+    var list = $('.steps', root), screen = $('.ps', root), now = $('.now', root);
+    var items = [], cur = 0;
+    cfg.steps.forEach(function(s, i){
+      var li = document.createElement('li');
+      li.className = 'step';
+      li.innerHTML = '<button type="button" class="sh" aria-expanded="false"><span class="num">' + (i + 1) + '</span><h3>' + s.t + '</h3></button>' +
+        '<div class="sb" hidden><p>' + s.d + '</p>' + (s.note ? '<p class="note"><b>' + s.note[0] + '</b>' + s.note[1] + '</p>' : '') + '</div>';
+      $('.sh', li).addEventListener('click', function(){ go(i); });
+      list.appendChild(li);
+      items.push(li);
+    });
+    var prev = $('.prev', root), next = $('.next', root), count = $('.count', root);
+    function go(i){
+      cur = i;
+      var s = cfg.steps[i];
+      items.forEach(function(li, j){
+        li.classList.toggle('active', j === i);
+        li.classList.toggle('done', j < i);
+        $('.sb', li).hidden = j !== i;
+        $('.sh', li).setAttribute('aria-expanded', j === i ? 'true' : 'false');
+      });
+      var sc = s.scene(); screen.innerHTML = (sc.indexOf('<img') === 0 ? '' : '<i class="pn"></i>') + sc;
+      now.innerHTML = '<h3>' + s.t + '</h3><p>' + s.d + '</p>' + (s.note ? '<p class="note"><b>' + s.note[0] + '</b>' + s.note[1] + '</p>' : '');
+      count.textContent = 'Paso ' + (i + 1) + ' de ' + cfg.steps.length;
+      prev.disabled = i === 0;
+      next.textContent = i === cfg.steps.length - 1 ? 'Volver al inicio' : 'Siguiente';
+    }
+    prev.addEventListener('click', function(){ if (cur > 0) go(cur - 1); });
+    next.addEventListener('click', function(){ go(cur === cfg.steps.length - 1 ? 0 : cur + 1); });
+    go(0);
+  }
+
+  /* ---------- Referencias ---------- */
+  var GESTOS = [
+    ['Armado total', 'Deslizar el icono del candado abierto hacia la izquierda.', 'Deja el domicilio protegido sin que nadie permanezca en el interior.'],
+    ['Armado perimetral', 'Deslizar el icono del candado abierto hacia la derecha.', 'Protege el exterior mientras la gente permanece dentro. Solo considera el área consensuada al momento de la instalación.'],
+    ['Desarmado', 'Deslizar el icono hacia el centro e ingresar el PIN.', 'Sirve desde armado total o parcial. Pide el PIN de Desactivación, o el de Coacción si fuese el caso.'],
+    ['Acceso seguro', 'Slide completo sobre la barra.', 'Inicia un temporizador de 60 segundos, configurable. Se desactiva con el PIN de Desactivación. Si no, se envía un evento de pánico.'],
+    ['Botón de Pánico', 'Slide completo sobre la barra.', 'Envía una señal de pánico a la central de monitoreo de manera silenciosa.'],
+    ['Emergencia Médica', 'Slide completo sobre la barra.', 'Envía una señal de emergencia médica a la central para conectar con una unidad asistencial, sin hacer sonar la sirena.'],
+    ['Últimos eventos', 'Deslizar el dashboard hacia abajo.', 'Muestra los últimos eventos enviados desde el panel a la central de monitoreo.']
+  ];
+
+  function buildGestos(root){
+    root.innerHTML =
+      '<h2>Gestos y PINs</h2>' +
+      '<p class="intro">Todo se hace desde el dashboard. Los PINs y la contraseña se cambian en Configuración de cuenta, dentro del menú.</p>' +
+      '<ul class="pins">' +
+        '<li class="pin-c"><div class="k">Ingreso a la app</div><div class="v">Usuario y contraseña</div><p>Los brinda la empresa de monitoreo.</p><p>En el primer inicio hay que cambiar la contraseña: mínimo 8 caracteres y al menos un número.</p></li>' +
+        '<li class="pin-c"><div class="k">PIN de Desactivación</div><div class="v">4 dígitos</div><p>Desarma el sistema de alarma.</p><p>También finaliza el acceso seguro.</p></li>' +
+        '<li class="pin-c"><div class="k">PIN de Coacción</div><div class="v">4 dígitos</div><p>No puede ser igual al PIN de Desactivación.</p><p>Al desarmar con él se simula una desactivación común, pero se envía un evento de pánico a la central.</p></li>' +
+      '</ul>' +
+      '<ul class="arows">' + GESTOS.map(function(g){
+        return '<li class="arow"><h3>' + g[0] + '</h3><div><span class="lb">Cómo se hace</span><p>' + g[1] + '</p></div><div><span class="lb">Qué pasa</span><p>' + g[2] + '</p></div></li>';
+      }).join('') + '</ul>';
+  }
+
+  var CENTRAL = [
+    ['Armado total, armado perimetral o desarmado', 'info', 'Informativo', 'Eventos Armado Total, Armado Perimetral y Desarmado en el historial, con el usuario que los hizo.'],
+    ['Armado con periféricos excluidos', 'info', 'Informativo', 'El sistema arma de manera parcial, sin el periférico excluido. En el historial aparece como Armado Total Parcial o con la cantidad de zonas excluidas.'],
+    ['Disparo de una zona', 'info', 'Informativo', 'Evento Disparo con la zona, por ejemplo Zona 10 Entrada.'],
+    ['Botón de Pánico', 'crit', 'Pánico', 'Señal de pánico silenciosa.'],
+    ['Emergencia Médica', 'med', 'Médica', 'Señal de emergencia médica, para conectar con una unidad asistencial. No suena la sirena.'],
+    ['Acceso seguro sin desactivar', 'crit', 'Pánico', 'Evento de pánico cuando termina el temporizador. Son 60 segundos por defecto y el valor es configurable.'],
+    ['Desarme con PIN de Coacción', 'crit', 'Pánico', 'Evento de pánico. En la app el usuario ve una desactivación común.']
+  ];
+
+  function buildCentral(root){
+    root.innerHTML =
+      '<h2>Qué recibe la central</h2>' +
+      '<p class="intro">Lo que llega al operador según lo que hace el usuario en la app. El historial completo también se puede consultar desde la app, con filtro por fechas.</p>' +
+      '<ul class="arows">' + CENTRAL.map(function(c){
+        return '<li class="arow two"><h3>' + c[0] + '</h3><div><span class="sev ' + c[1] + '">' + c[2] + '</span><p>' + c[3] + '</p></div></li>';
+      }).join('') + '</ul>';
+  }
+
+  /* ---------- Simulador ---------- */
+  function buildSim(root){
+    root.innerHTML =
+      '<div class="proc"><div class="info">' +
+        '<h2>Practicar en la app</h2>' +
+        '<p class="hint">Usá la app como la usaría el usuario final: arrastrá el candado hacia los costados, deslizá las barras hasta el final y fijate abajo qué llega a la central.</p>' +
+        '<div class="pinbox"><span>PIN de Desactivación: 1234</span><span>PIN de Coacción: 4321</span></div>' +
+        '<div class="grp"><h3>Atajos sin deslizar</h3><div class="ctl">' +
+          '<button type="button" class="btn-s" data-a="total">Armado total</button>' +
+          '<button type="button" class="btn-s" data-a="perim">Armado perimetral</button>' +
+          '<button type="button" class="btn-s" data-a="des">Desarmar</button>' +
+          '<button type="button" class="btn-s" data-a="acc">Acceso seguro</button>' +
+          '<button type="button" class="btn-s" data-a="panic">Pánico</button>' +
+          '<button type="button" class="btn-s" data-a="med">Emergencia médica</button></div></div>' +
+        '<div class="grp"><h3>Simular fallas</h3>' +
+          '<label class="chk"><input type="checkbox" id="fnet"> Celular sin internet</label>' +
+          '<label class="chk"><input type="checkbox" id="fdev"> Equipo sin conexión</label></div>' +
+        '<p class="status" id="sstat" aria-live="polite"></p>' +
+        '<div class="logh"><h3 class="tgl">Eventos en la central</h3><button type="button" class="btn-s" id="sclr" style="min-height:36px;padding:4px 12px">Limpiar</button></div>' +
+        '<ul class="log" id="slog"></ul>' +
+      '</div><div class="stage">' + phoneShell() + '<p class="cap">Simulación con datos de ejemplo. No envía nada real.</p></div></div>';
+
+    var screen = $('.ps', root), stat = $('#sstat', root), logEl = $('#slog', root);
+    var st = {mode: 'off', busy: false, target: null, pad: null, pin: '', err: false, net: false, dev: false, ov: null, acc: null, flash: {}, ev: SAMPLE_EV.slice(), log: []};
+    var accTimer = null;
+    var timeStr = function(){ var d = new Date(); return pad2(d.getHours()) + ':' + pad2(d.getMinutes()) + ':' + pad2(d.getSeconds()); };
+
+    function say(t){ stat.textContent = t; }
+    function addEv(name, sub, sev, centralName){
+      var t = timeStr();
+      st.ev.unshift({n: name, s: sub, t: t});
+      st.log.unshift({t: t, n: centralName || name, sev: sev || 'info'});
+      renderLog();
+    }
+    function addCentralOnly(name, sev){ st.log.unshift({t: timeStr(), n: name, sev: sev}); renderLog(); }
+    function renderLog(){
+      var lab = {info: 'Informativo', crit: 'Pánico', med: 'Médica'};
+      logEl.innerHTML = st.log.length ? st.log.map(function(l){
+        return '<li><time>' + l.t + '</time><span>' + l.n + '</span><span class="sev ' + l.sev + '">' + lab[l.sev] + '</span></li>';
+      }).join('') : '<li class="empty">Todavía no llegó ningún evento. Armá, desarmá o usá los botones de emergencia.</li>';
+    }
+    function blocked(){
+      if (st.net){ st.ov = 'net'; render(); return true; }
+      if (st.dev){ st.ov = 'dev'; render(); return true; }
+      return false;
+    }
+
+    function render(){
+      var html;
+      if (st.pad){
+        html = pinKeys({title: st.pad === 'acc' ? 'Finalizar Acceso Seguro' : 'Desactivar alarma', filled: st.pin.length, sub: st.err ? 'PIN incorrecto' : 'Ingresa tu PIN', err: st.err, live: true});
+      } else {
+        html = dash({
+          mode: st.busy ? st.target : st.mode, busy: st.busy, dim: st.net || st.dev, events: st.ev,
+          bar: {acc: st.acc ? 'run' : 'idle', panic: st.flash.panic ? 'done' : 'idle', med: st.flash.med ? 'done' : 'idle'},
+          secs: st.acc ? st.acc.left : 60
+        });
+      }
+      if (st.ov){
+        var big = st.ov === 'net'
+          ? dlgBig('wifioff', 'No hay conexión a internet', 'Algunas acciones se encuentran bloqueadas hasta recuperar conexión.', true)
+          : dlgBig('devoff', 'El panel se encuentra sin conexión', 'Se ha perdido la conexión con el panel.', true);
+        html += big;
+      }
+      screen.innerHTML = '<i class="pn"></i>' + html;
+      bind();
+    }
+
+    function arm(kind){
+      if (st.busy || st.pad || st.mode !== 'off') { if (st.mode !== 'off') say('Primero hay que desarmar el sistema.'); return; }
+      if (blocked()) return;
+      st.busy = true; st.target = kind; render();
+      setTimeout(function(){
+        st.busy = false; st.mode = kind;
+        addEv(kind === 'total' ? 'Armado Total' : 'Armado Perimetral', 'Usuario Técnico');
+        say(kind === 'total' ? 'Sistema en armado total.' : 'Sistema en armado perimetral.');
+        render();
+      }, 1100);
+    }
+    function askPin(kind){
+      if (st.busy) return;
+      if (kind === 'des' && st.mode === 'off'){ say('El sistema ya está desarmado.'); return; }
+      if (blocked()) return;
+      st.pad = kind; st.pin = ''; st.err = false; render();
+    }
+    function press(d){
+      if (!st.pad) return;
+      if (d === 'x'){ st.pin = st.pin.slice(0, -1); st.err = false; render(); return; }
+      if (st.pin.length >= 4) return;
+      st.pin += d; st.err = false; render();
+      if (st.pin.length === 4) setTimeout(check, 220);
+    }
+    function check(){
+      if (!st.pad || st.pin.length < 4) return;
+      var p = st.pin;
+      if (st.pad === 'des'){
+        if (p === '1234'){
+          st.mode = 'off'; addEv('Desarmado', 'Usuario Técnico'); say('Sistema desarmado con el PIN de Desactivación.');
+        } else if (p === '4321'){
+          st.mode = 'off'; st.ev.unshift({n: 'Desarmado', s: 'Usuario Técnico', t: timeStr()});
+          addCentralOnly('Desarmado', 'info'); addCentralOnly('Pánico por PIN de Coacción', 'crit');
+          say('El usuario ve un desarme común, pero a la central llegó un pánico.');
+        } else { st.pin = ''; st.err = true; render(); return; }
+      } else {
+        if (p === '1234'){
+          clearInterval(accTimer); st.acc = null; say('Acceso seguro finalizado.');
+        } else { st.pin = ''; st.err = true; render(); return; }
+      }
+      st.pad = null; st.pin = ''; st.err = false; render();
+    }
+    function flash(k, name, sev, sub){
+      if (blocked()) return;
+      if (st.flash[k]) return;
+      st.flash[k] = true; addEv(name, sub, sev); render();
+      say(name + ' enviado a la central.');
+      setTimeout(function(){ st.flash[k] = false; render(); }, 2200);
+    }
+    function acc(){
+      if (st.acc){ askPin('acc'); return; }
+      if (blocked()) return;
+      st.acc = {left: 60}; render(); say('Acceso seguro iniciado. Dejá correr los 60 segundos para ver el pánico, o desactivalo con el PIN.');
+      accTimer = setInterval(function(){
+        if (!st.acc){ clearInterval(accTimer); return; }
+        st.acc.left--;
+        if (st.acc.left <= 0){
+          clearInterval(accTimer); st.acc = null; st.pad = null; st.pin = '';
+          st.ev.unshift({n: 'Pánico', s: 'Acceso seguro', t: timeStr()});
+          addCentralOnly('Pánico por acceso seguro sin desactivar', 'crit'); say('Se terminó el tiempo: llegó un pánico a la central.');
+        }
+        render();
+      }, 1000);
+    }
+    function doAction(a){
+      if (a === 'total' || a === 'perim') arm(a);
+      else if (a === 'des') askPin('des');
+      else if (a === 'acc') acc();
+      else if (a === 'panic') flash('panic', 'Pánico', 'crit', 'Botón de Pánico');
+      else if (a === 'med') flash('med', 'Emergencia médica', 'med', 'Emergencia Médica');
+    }
+
+    function bind(){
+      var tok = $('.tok', screen);
+      if (tok && !st.busy) tok.addEventListener('pointerdown', startDrag);
+      $$('.sl', screen).forEach(function(el){ el.addEventListener('pointerdown', startSlide); });
+      $$('.pk[data-d]', screen).forEach(function(b){ b.addEventListener('click', function(){ press(b.getAttribute('data-d')); }); });
+      var bk = $('.bkb', screen);
+      if (bk) bk.addEventListener('click', function(){ st.pad = null; st.pin = ''; st.err = false; render(); });
+      var ob = $('.ovb', screen);
+      if (ob) ob.addEventListener('click', function(){ st.ov = null; render(); });
+    }
+
+    function startDrag(e){
+      if (st.pad || st.ov) return;
+      var tok = e.currentTarget, box = tok.parentNode, r = box.getBoundingClientRect();
+      var base = st.mode === 'off' ? 0.5 : (st.mode === 'total' ? 0.17 : 0.83);
+      var x0 = e.clientX, f = base, moved = false;
+      tok.setPointerCapture(e.pointerId);
+      tok.classList.add('drag');
+      function mv(ev){
+        moved = true;
+        f = Math.max(0.17, Math.min(0.83, base + (ev.clientX - x0) / r.width));
+        tok.style.setProperty('--x', (f * 100) + '%');
+      }
+      function up(){
+        tok.removeEventListener('pointermove', mv);
+        tok.removeEventListener('pointerup', up);
+        tok.removeEventListener('pointercancel', up);
+        tok.classList.remove('drag');
+        tok.style.setProperty('--x', (base * 100) + '%');
+        if (!moved) return;
+        if (st.mode === 'off'){
+          if (f < 0.36) arm('total'); else if (f > 0.64) arm('perim');
+        } else if (f > 0.36 && f < 0.64) askPin('des');
+      }
+      tok.addEventListener('pointermove', mv);
+      tok.addEventListener('pointerup', up);
+      tok.addEventListener('pointercancel', up);
+    }
+
+    function startSlide(e){
+      if (st.pad || st.ov) return;
+      var el = e.currentTarget, k = el.getAttribute('data-k');
+      if (k === 'acc' && st.acc){ askPin('acc'); return; }
+      if (el.classList.contains('done')) return;
+      var r = el.getBoundingClientRect(), span = Math.max(1, r.width - r.height), x0 = e.clientX, p = 0;
+      el.setPointerCapture(e.pointerId);
+      el.classList.add('drag');
+      function mv(ev){
+        p = Math.max(0, Math.min(1, (ev.clientX - x0) / span));
+        el.style.setProperty('--p', p);
+      }
+      function up(){
+        el.removeEventListener('pointermove', mv);
+        el.removeEventListener('pointerup', up);
+        el.removeEventListener('pointercancel', up);
+        el.classList.remove('drag');
+        if (p > 0.9){ doAction(k); }
+        else { el.style.setProperty('--p', 0); if (p > 0.05) say('Hay que deslizar la barra hasta el final.'); }
+      }
+      el.addEventListener('pointermove', mv);
+      el.addEventListener('pointerup', up);
+      el.addEventListener('pointercancel', up);
+    }
+
+    $$('[data-a]', root).forEach(function(b){ b.addEventListener('click', function(){ doAction(b.getAttribute('data-a')); }); });
+    $('#fnet', root).addEventListener('change', function(e){
+      st.net = e.target.checked;
+      if (st.net){ st.ov = 'net'; say('Sin internet: la app bloquea las acciones.'); } else { st.ov = null; say('Conexión a internet recuperada.'); }
+      render();
+    });
+    $('#fdev', root).addEventListener('change', function(e){
+      st.dev = e.target.checked;
+      if (st.dev && !st.net){ st.ov = 'dev'; say('Equipo sin conexión: la app no puede enviar comandos.'); } else if (!st.dev){ st.ov = st.net ? 'net' : null; say('El equipo volvió a conectarse.'); }
+      render();
+    });
+    $('#sclr', root).addEventListener('click', function(){ st.log = []; renderLog(); });
+    document.addEventListener('keydown', function(e){
+      if (root.hidden || !st.pad) return;
+      if (/^[0-9]$/.test(e.key)) press(e.key);
+      else if (e.key === 'Backspace') press('x');
+    });
+    renderLog();
+    render();
+  }
+
+  /* ---------- Pestañas ---------- */
+  buildProc($('#tab-inicio'), PROCS.inicio);
+  buildProc($('#tab-armado'), PROCS.armado);
+  buildProc($('#tab-emergencias'), PROCS.emergencias);
+  buildProc($('#tab-menu'), PROCS.menu);
+  buildProc($('#tab-avisos'), PROCS.avisos);
+  buildGestos($('#tab-gestos'));
+  buildCentral($('#tab-central'));
+  buildSim($('#tab-practicar'));
+
+  var tabs = $$('[role="tab"]');
+  function show(id, focus){
+    tabs.forEach(function(t){
+      var sel = t.getAttribute('data-t') === id;
+      t.setAttribute('aria-selected', sel ? 'true' : 'false');
+      t.tabIndex = sel ? 0 : -1;
+      if (sel && focus) t.focus();
+    });
+    $$('[role="tabpanel"]').forEach(function(p){ p.hidden = p.id !== 'tab-' + id; });
+    try { history.replaceState(null, '', '#' + id); } catch (e) {}
+  }
+  tabs.forEach(function(t, i){
+    t.addEventListener('click', function(){ show(t.getAttribute('data-t')); });
+    t.addEventListener('keydown', function(e){
+      var d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      show(tabs[(i + d + tabs.length) % tabs.length].getAttribute('data-t'), true);
+    });
+  });
+  var h = (location.hash || '').slice(1);
+  if (h && document.getElementById('tab-' + h)) show(h);
+})();
+</script>
+
+</body></html>
